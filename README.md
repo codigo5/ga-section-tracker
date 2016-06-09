@@ -1,5 +1,5 @@
 # Google Analytics Section Tracker
-Automagically plugin that tracks on Google Analytics through your scroll for one-page layouts.
+Automagically tracks pageviews on your Google Analytics through for one-pages layouts.
 
 ## Contributors
 You can view the authors [right here](https://github.com/codigo5/ga-secion-tracker/graphs/contributors).

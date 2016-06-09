@@ -3,7 +3,7 @@
 /**
  * Plugin Name: GA Section Tracker
  * Plugin URI: http://codigo5.com.br
- * Description: Automagically plugin that tracks on Google Analytics through your scroll for one-page layouts.
+ * Description: Automagically tracks pageviews on your Google Analytics through for one-pages layouts.
  * Version: 1.0.0
  * Author: Dhyego Fernando at Codigo5.com.br
  * Author URI: https://github.com/dhyegofernando
