@@ -1,7 +1,20 @@
 (function($) {
+  var navigationSticky = $('#navigation_sticky');
+  window.gaSectionTrackerOptions = window.gaSectionTrackerOptions || {
+    autoResize: true,
+    delay: 500,
+    thresholding: (navigationSticky.is(':visible') && navigationSticky.outerHeight(true)) || 0,
+    sectionSelector: '.section-tracker',
+    sectionId: function(section) {
+      return section.closest('section').attr('id');
+    },
+    sectionTitle: function() {}
+  };
+
   $(function() {
     var analytics;
     var scrollTracker;
+    var sectionTrackerOptions = window.gaSectionTrackerOptions;
 
     $(window).on('scrollTracker:changeTarget', function(e, currentTarget) {
       var data = $(currentTarget).data('sectionTracker');
@@ -10,10 +23,11 @@
       analytics('send', 'pageview');
     });
 
-    var sectionsToTrack = $('.section-tracker')
+    var sectionsToTrack = $(sectionTrackerOptions.sectionSelector)
       .filter(function() {
         var section = $(this);
-        var id = section.closest('.vntd-section-default').attr('id');
+        var id = sectionTrackerOptions.sectionId(section);
+        var title = ((typeof sectionTrackerOptions.sectionTitle === 'function') ? sectionTrackerOptions.sectionTitle(section) : null) || id;
 
         if (!id) {
           console.error('[section-tracker] This section is not going to be tracked because it was not identified.', section);
@@ -22,21 +36,15 @@
 
         section.data('sectionTracker', {
           page: '/#' + id,
-          title: id
+          title: title
         });
 
         return true;
       });
 
     var doScrollTracker = function() {
-      var navigationSticky = $('#navigation_sticky');
-      var options = {
-        delay: 500,
-        thresholding: (navigationSticky.is(':visible') && navigationSticky.outerHeight(true)) || 0
-      };
-
       if (!scrollTracker) {
-        scrollTracker = sectionsToTrack.scrollTracker(options);
+        scrollTracker = sectionsToTrack.scrollTracker(sectionTrackerOptions);
       } else {
         scrollTracker.setOptions(options);
         scrollTracker.restart();
@@ -48,7 +56,9 @@
         analytics = _analytics_;
 
         // Change options when resize
-        $(window).on('resize', $.debounce(options.delay, doScrollTracker));
+        if (sectionTrackerOptions.autoResize) {
+          $(window).on('resize', $.debounce(sectionTrackerOptions.delay, doScrollTracker));
+        }
 
         // And then, init it
         doScrollTracker();
